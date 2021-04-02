@@ -12,9 +12,12 @@
 #include <memory>
 #include <sstream>
 #include <string>
+#define USE_LWE
 
 #include "log.h"
+#if defined(USE_LWE)
 #include "lwe/LWEWebView.h"
+#endif
 #include "webview_flutter_tizen_plugin.h"
 
 WebViewFactory::WebViewFactory(flutter::PluginRegistrar* registrar,
@@ -28,13 +31,14 @@ WebViewFactory::WebViewFactory(flutter::PluginRegistrar* registrar,
   std::string cookiePath = path + std::string("StarFish_cookies.db");
   std::string cachePath = path + std::string("Starfish_cache.db");
 
+#if defined(USE_LWE)
   LWE::LWE::Initialize(localstoragePath.c_str(), cookiePath.c_str(),
                        cachePath.c_str());
-
   if (path) {
     free(path);
     path = nullptr;
   }
+#endif
 }
 
 PlatformView* WebViewFactory::Create(int viewId, double width, double height,
@@ -47,11 +51,15 @@ PlatformView* WebViewFactory::Create(int viewId, double width, double height,
 
   try {
     return new WebView(GetPluginRegistrar(), viewId, textureRegistrar_, width,
-                       height, params);
+                       height, params,getWindowHandle());
   } catch (const std::invalid_argument& ex) {
     LOG_ERROR("[Exception] %s\n", ex.what());
     return nullptr;
   }
 }
 
-void WebViewFactory::Dispose() { LWE::LWE::Finalize(); }
+void WebViewFactory::Dispose() { 
+#if defined(USE_LWE)
+  LWE::LWE::Finalize(); 
+#endif
+}

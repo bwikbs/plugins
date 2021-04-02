@@ -56,7 +56,26 @@ class _WebViewExampleState extends State<WebViewExample> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
+          // initialUrl:
+          //     'http://s3.amazonaws.com/buildinternet/live-tutorials/panning-slideshow/panning-slideshow.htm',
+          // initialUrl: 'https://www.tympanus.net/Tutorials/PhotoZoomOutEffect/',
+          initialUrl: 'https://css-tricks.com/examples/Circulate/',
+          // initialUrl:
+          //     'https://code.almeros.com/code-examples/water-effect-canvas/#.UXqYkhzFUsw',
+          // initialUrl: 'http://www.daum.net',
+          // initialUrl: 'https://shapeshed.com/examples/HTML5-video-element/',
+          // initialUrl: 'https://lab.hakim.se/wave/03/',
+          // initialUrl: 'http://www.feedtank.com/labs/html_canvas/',
+          // initialUrl: 'https://m.naver.com',
+          // initialUrl: 'http://www.simplehtmlguide.com/examples/youtube2.html',
+          // initialUrl:
+          //     'https://webglsamples.org/dynamic-cubemap/dynamic-cubemap.html',
+          // initialUrl: 'https://webglsamples.org/blob/blob.html',
+          // initialUrl: 'https://webglsamples.org/aquarium/aquarium.html',
+          // initialUrl: 'https://bwikbs.github.io/PTAlarm/',
+          // initialUrl: 'https://www.youtube.com/watch?v=zF5Ddo9JdpY',
+          // initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
+
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);

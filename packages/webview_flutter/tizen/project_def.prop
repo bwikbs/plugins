@@ -18,13 +18,16 @@ USER_CPP_UNDEFS =
 USER_CFLAGS_MISC =
 USER_CPPFLAGS_MISC = -c -fmessage-length=0 
 USER_LFLAGS = -llightweight-web-engine.flutter -Wl,-rpath='$$ORIGIN'
+#USER_LFLAGS = -lchromium-ewk -Wl,-rpath='$$ORIGIN'
 
 # Libraries and objects
 USER_LIB_DIRS = lib/${BUILD_ARCH}
+
 USER_LIBS = lightweight-web-engine.flutter
+#USER_LIBS = chromium-ewk
 USER_OBJS =
 
 # User includes
-USER_INC_DIRS = inc src
+USER_INC_DIRS = inc src 
 USER_INC_FILES =
 USER_CPP_INC_FILES =
