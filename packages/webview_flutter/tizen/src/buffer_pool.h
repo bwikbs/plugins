@@ -42,6 +42,7 @@ class BufferPool {
   void Prepare(int with, int height);
 
  private:
+  int allocationIdx_;
   std::mutex mutex_;
   std::vector<std::unique_ptr<BufferUnit>> pool_;
 };

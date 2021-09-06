@@ -54,36 +54,66 @@ class _WebViewExampleState extends State<WebViewExample> {
       ),
       // We're using a Builder here so we have a context that is below the Scaffold
       // to allow calling Scaffold.of(context) so we can show a snackbar.
-      body: Builder(builder: (BuildContext context) {
-        return WebView(
-          initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-          },
-          onProgress: (int progress) {
-            print("WebView is loading (progress : $progress%)");
-          },
-          javascriptChannels: <JavascriptChannel>{
-            _toasterJavascriptChannel(context),
-          },
-          navigationDelegate: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              print('blocking navigation to $request}');
-              return NavigationDecision.prevent;
-            }
-            print('allowing navigation to $request');
-            return NavigationDecision.navigate;
-          },
-          onPageStarted: (String url) {
-            print('Page started loading: $url');
-          },
-          onPageFinished: (String url) {
-            print('Page finished loading: $url');
-          },
-          gestureNavigationEnabled: true,
-        );
-      }),
+      body: Column(
+        children: <Widget>[
+            Row(
+              children: <Widget>[
+                  SizedBox(
+                    width: 1000.0,
+                    height: 300.0,
+                    // child: Container( color: Colors.red),
+                    child: WebView(
+                      initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
+                    ),
+                  ),
+                  // SizedBox(
+                  //   width: 100.0,
+                  //   height: 100.0,
+                  //   child: Container( color: Colors.pink),
+                  //   // child: WebView(
+                  //   //   initialUrl: 'https://css-tricks.com/examples/Circulate/',
+                  //   // ),
+                  // ),
+                  // SizedBox(
+                  //   width: 100.0,
+                  //   height: 100.0,
+                  //   child: Container( color: Colors.blue),
+                  //   // child: WebView(
+                  //   //   initialUrl: 'http://s3.amazonaws.com/buildinternet/live-tutorials/panning-slideshow/panning-slideshow.htm',
+                  //   // ),
+                  // ),
+              ]
+            ),
+            Row(
+              children: <Widget>[
+                  SizedBox(
+                    width: 1000.0,
+                    height: 300.0,
+                    // child: Container( color: Colors.yellow),
+                    child: WebView(
+                      initialUrl: 'https://css-tricks.com/examples/Circulate/',
+                    ),
+                  ),
+                  // SizedBox(
+                  //   width: 100.0,
+                  //   height: 100.0,
+                  //   child: Container( color: Colors.purple),
+                  //   // child: WebView(
+                  //   //   initialUrl: 'https://lab.hakim.se/wave/02/',
+                  //   // ),
+                  // ),
+                  // SizedBox(
+                  //   width: 100.0,
+                  //   height: 100.0,
+                  //   child: Container( color: Colors.green),
+                  //   // child: WebView(
+                  //   //   initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
+                  //   // ),
+                  // ),
+              ]
+            )
+        ],
+      ),
       floatingActionButton: favoriteButton(),
     );
   }

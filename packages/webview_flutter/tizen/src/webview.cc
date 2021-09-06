@@ -141,6 +141,8 @@ bool GetValueFromEncodableMap(const flutter::EncodableValue& arguments,
   return false;
 }
 
+static int Thread = 0;
+
 WebView::WebView(flutter::PluginRegistrar* registrar, int viewId,
                  flutter::TextureRegistrar* texture_registrar, double width,
                  double height, flutter::EncodableMap& params,
@@ -150,6 +152,7 @@ WebView::WebView(flutter::PluginRegistrar* registrar, int viewId,
       webview_instance_(nullptr),
       width_(width),
       height_(height),
+      working_surface_(nullptr),
       candidate_surface_(nullptr),
       rendered_surface_(nullptr),
       is_mouse_lbutton_down_(false),
@@ -158,6 +161,7 @@ WebView::WebView(flutter::PluginRegistrar* registrar, int viewId,
       context_(nullptr),
       texture_variant_(nullptr),
       gpu_buffer_(nullptr) {
+        threadNumber = Thread++;
   tbm_pool_ = std::make_unique<BufferPool>(width, height);
   texture_variant_ = new flutter::TextureVariant(flutter::GpuBufferTexture(
       [this](size_t width, size_t height) -> const FlutterDesktopGpuBuffer* {
@@ -772,14 +776,16 @@ void WebView::InitWebView() {
       0, 0, width_, height_, scale_factor, "SamsungOneUI", "ko-KR",
       "Asia/Seoul",
       [this]() -> LWE::WebContainer::ExternalImageInfo {
+        LOG_DEBUG("[MONG][%d] WebView::allocate buffer---> \n",threadNumber);
         std::lock_guard<std::mutex> lock(mutex_);
         LWE::WebContainer::ExternalImageInfo result;
-        if (!candidate_surface_) {
-          candidate_surface_ = tbm_pool_->GetAvailableBuffer();
+        if (!working_surface_) {
+          working_surface_ = tbm_pool_->GetAvailableBuffer();
         }
-        if (candidate_surface_) {
+        if (working_surface_) {
           result.imageAddress =
-              static_cast<void*>(candidate_surface_->Surface());
+              static_cast<void*>(working_surface_->Surface());
+          LOG_DEBUG("[MONG][%d] WebView::allocate buffer---> %d \n",threadNumber,working_surface_->Index());
         } else {
           result.imageAddress = nullptr;
         }
@@ -787,7 +793,16 @@ void WebView::InitWebView() {
       },
       [this](LWE::WebContainer* c, bool isRendered) {
         if (isRendered) {
-          texture_registrar_->MarkTextureFrameAvailable(GetTextureId());
+          LOG_DEBUG("[MONG][%d] WebView::finish redering ---> \n",threadNumber);
+          std::lock_guard<std::mutex> lock(mutex_);
+          if(candidate_surface_){
+            tbm_pool_->Release(candidate_surface_);
+            candidate_surface_ = nullptr;
+          }else{
+            texture_registrar_->MarkTextureFrameAvailable(GetTextureId());
+          }
+          candidate_surface_ = working_surface_;
+          working_surface_ = nullptr;
         }
       });
 #ifndef TV_PROFILE
@@ -935,17 +950,23 @@ void WebView::HandleCookieMethodCall(
 }
 
 FlutterDesktopGpuBuffer* WebView::ObtainGpuBuffer(size_t width, size_t height) {
+  LOG_DEBUG("[MONG][%d] WebView::ObtainGpuBuffer ---> \n",threadNumber);
+
+  std::lock_guard<std::mutex> lock(mutex_);
   if (!candidate_surface_) {
     if (!rendered_surface_) {
+      LOG_DEBUG("[MONG][%d] WebView::ObtainGpuBuffer ---> null \n",threadNumber);
       return nullptr;
     } else {
+      LOG_DEBUG("[MONG][%d] WebView::ObtainGpuBuffer ---> Use Previous surface..\n",threadNumber);
       return gpu_buffer_;
     }
   }
-  std::lock_guard<std::mutex> lock(mutex_);
   rendered_surface_ = candidate_surface_;
   candidate_surface_ = nullptr;
   if (gpu_buffer_) {
+    LOG_DEBUG("[MONG][%d] WebView::ObtainGpuBuffer ---> %d \n",threadNumber,rendered_surface_->Index());
+
     gpu_buffer_->buffer = static_cast<void*>(rendered_surface_->Surface());
     gpu_buffer_->width = width;
     gpu_buffer_->height = height;
@@ -954,9 +975,12 @@ FlutterDesktopGpuBuffer* WebView::ObtainGpuBuffer(size_t width, size_t height) {
 }
 
 void WebView::DestructBuffer(void* buffer) {
+  LOG_DEBUG("[MONG][%d] WebView::DestructBuffer ---> \n",threadNumber);
+
   if (buffer) {
     BufferUnit* unit = tbm_pool_->Find((tbm_surface_h)buffer);
     if (unit) {
+      LOG_DEBUG("[MONG][%d] WebView::DestructBuffer ---> Release %d\n",threadNumber,unit->Index());
       tbm_pool_->Release(unit);
     }
   }

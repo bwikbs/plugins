@@ -69,6 +69,7 @@ class WebView : public PlatformView {
   LWE::WebContainer* webview_instance_;
   double width_;
   double height_;
+  BufferUnit* working_surface_;
   BufferUnit* candidate_surface_;
   BufferUnit* rendered_surface_;
   bool is_mouse_lbutton_down_;
@@ -80,6 +81,10 @@ class WebView : public PlatformView {
   FlutterDesktopGpuBuffer* gpu_buffer_;
   std::mutex mutex_;
   std::unique_ptr<BufferPool> tbm_pool_;
+
+  //
+  int threadNumber;
+
 };
 
 #endif  // FLUTTER_PLUGIN_WEBVIEW_FLUTTER_TIZEN_WEVIEW_H_
