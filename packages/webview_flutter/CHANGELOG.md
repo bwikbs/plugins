@@ -47,3 +47,6 @@
 
 ## 0.3.8
 * Update webivew_flutter to 2.3.0
+
+## 0.3.9
+* Fix minor bug
