@@ -6,6 +6,12 @@
 #include <flutter/standard_message_codec.h>
 #include <flutter_plugin_registrar.h>
 
+#include "flutter_data_channel.h"
+#include "flutter_media_stream.h"
+#include "flutter_peerconnection.h"
+#include "flutter_video_renderer.h"
+// #include "libwebrtc.h"
+
 #ifdef FLUTTER_PLUGIN_IMPL
 #define FLUTTER_PLUGIN_EXPORT __attribute__((visibility("default")))
 #else
@@ -23,6 +29,7 @@ FLUTTER_PLUGIN_EXPORT void FlutterWebRTCPluginRegisterWithRegistrar(
 #endif
 
 #endif
+
 namespace flutter_webrtc_plugin {
 
 class FlutterWebRTCPlugin : public flutter::Plugin {
@@ -32,14 +39,18 @@ class FlutterWebRTCPlugin : public flutter::Plugin {
   virtual flutter::TextureRegistrar *textures() = 0;
 };
 
-class FlutterWebRTC {
+class FlutterWebRTC : public FlutterWebRTCBase,
+                      public FlutterVideoRendererManager,
+                      public FlutterMediaStream,
+                      public FlutterPeerConnection,
+                      public FlutterDataChannel {
  public:
-  FlutterWebRTC(FlutterWebRTCPlugin *plugin) {}
-  virtual ~FlutterWebRTC() {}
+  FlutterWebRTC(FlutterWebRTCPlugin *plugin);
+  virtual ~FlutterWebRTC();
 
   void HandleMethodCall(
-      const flutter::MethodCall<flutter::EncodableValue> &method_call,
-      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {}
+      const flutter::MethodCall<EncodableValue> &method_call,
+      std::unique_ptr<flutter::MethodResult<EncodableValue>> result);
 };
 
 }  // namespace flutter_webrtc_plugin
