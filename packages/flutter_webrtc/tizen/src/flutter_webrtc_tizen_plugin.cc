@@ -3,13 +3,12 @@
 // found in the LICENSE file.
 
 #include "flutter_webrtc_tizen_plugin.h"
+#include "flutter_tizen.h"
 
 #include <flutter/standard_message_codec.h>
-#include <flutter/standard_method_codec.h>
-
 #include <memory>
 
-#include "flutter_tizen.h"
+#include "flutter_webrtc.h"
 
 const char *kChannelName = "FlutterWebRTC.Method";
 
@@ -19,10 +18,9 @@ namespace flutter_webrtc_plugin {
 class FlutterWebRTCPluginImpl : public FlutterWebRTCPlugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrar *registrar) {
-    auto channel =
-        std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-            registrar->messenger(), kChannelName,
-            &flutter::StandardMethodCodec::GetInstance());
+    auto channel = std::make_unique<flutter::MethodChannel<EncodableValue>>(
+        registrar->messenger(), kChannelName,
+        &flutter::StandardMethodCodec::GetInstance());
 
     auto *channel_pointer = channel.get();
 
@@ -48,7 +46,7 @@ class FlutterWebRTCPluginImpl : public FlutterWebRTCPlugin {
   // Creates a plugin that communicates on the given channel.
   FlutterWebRTCPluginImpl(
       flutter::PluginRegistrar *registrar,
-      std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> channel)
+      std::unique_ptr<flutter::MethodChannel<EncodableValue>> channel)
       : channel_(std::move(channel)),
         messenger_(registrar->messenger()),
         textures_(registrar->texture_registrar()) {
@@ -57,14 +55,14 @@ class FlutterWebRTCPluginImpl : public FlutterWebRTCPlugin {
 
   // Called when a method is called on |channel_|;
   void HandleMethodCall(
-      const flutter::MethodCall<flutter::EncodableValue> &method_call,
-      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
+      const flutter::MethodCall<EncodableValue> &method_call,
+      std::unique_ptr<flutter::MethodResult<EncodableValue>> result) {
     // handle method call and forward to webrtc native sdk.
     webrtc_->HandleMethodCall(method_call, std::move(result));
   }
 
  private:
-  std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>> channel_;
+  std::unique_ptr<flutter::MethodChannel<EncodableValue>> channel_;
   std::unique_ptr<FlutterWebRTC> webrtc_;
   flutter::BinaryMessenger *messenger_;
   flutter::TextureRegistrar *textures_;
