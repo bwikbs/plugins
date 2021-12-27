@@ -1,18 +1,19 @@
-#include <webrtc.h>
+#include "flutter_webrtc.h"
 
 #include "flutter_webrtc_tizen_plugin.h"
-#include "flutter_webrtc.h"
+
+#include <webrtc.h>
 
 namespace flutter_webrtc_plugin {
 
 FlutterWebRTC::FlutterWebRTC(FlutterWebRTCPlugin* plugin)
     : FlutterWebRTCBase::FlutterWebRTCBase(plugin->messenger(),
-                                           plugin->textures())
-// FlutterVideoRendererManager::FlutterVideoRendererManager(this),
-// FlutterMediaStream::FlutterMediaStream(this),
-// FlutterPeerConnection::FlutterPeerConnection(this),
-// FlutterDataChannel::FlutterDataChannel(this) {}
-{}
+                                           plugin->textures()),
+      FlutterVideoRendererManager::FlutterVideoRendererManager(this),
+      FlutterMediaStream::FlutterMediaStream(this),
+      FlutterPeerConnection::FlutterPeerConnection(this),
+      FlutterDataChannel::FlutterDataChannel(this) {}
+
 FlutterWebRTC::~FlutterWebRTC() {}
 
 void FlutterWebRTC::HandleMethodCall(

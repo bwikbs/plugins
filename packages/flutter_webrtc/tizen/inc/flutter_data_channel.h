@@ -5,49 +5,69 @@
 
 namespace flutter_webrtc_plugin {
 
+//*****************************************
+enum RTCDataChannelState {
+  RTCDataChannelConnecting,
+  RTCDataChannelOpen,
+  RTCDataChannelClosing,
+  RTCDataChannelClosed,
+};
+
+struct RTCDataChannelInit {
+  bool ordered = true;
+  bool reliable = true;
+  int maxRetransmitTime = -1;
+  int maxRetransmits = -1;
+  std::string protocol = {"sctp"};  // sctp | quic
+  bool negotiated = false;
+  int id = 0;
+};
+//*****************************************
+
 class FlutterRTCDataChannelObserver {
-  // class FlutterRTCDataChannelObserver : public RTCDataChannelObserver {
-  //  public:
-  //   FlutterRTCDataChannelObserver(scoped_refptr<RTCDataChannel> data_channel,
-  //                                 BinaryMessenger *messenger,
-  //                                 const std::string &channel_name);
-  //   virtual ~FlutterRTCDataChannelObserver();
+   public:
+    FlutterRTCDataChannelObserver(
+                                  // scoped_refptr<RTCDataChannel> data_channel,
+                                  BinaryMessenger *messenger,
+                                  const std::string &channel_name);
+    virtual ~FlutterRTCDataChannelObserver();
 
-  //   virtual void OnStateChange(RTCDataChannelState state) override;
+    virtual void OnStateChange(RTCDataChannelState state);
 
-  //   virtual void OnMessage(const char *buffer, int length, bool binary)
-  //   override;
+    virtual void OnMessage(const char *buffer, int length, bool binary);
 
-  //   scoped_refptr<RTCDataChannel> data_channel() { return data_channel_; }
+    // scoped_refptr<RTCDataChannel> data_channel() { return data_channel_; }
 
-  //  private:
-  //   std::unique_ptr<EventChannel<EncodableValue>> event_channel_;
-  //   std::unique_ptr<EventSink<EncodableValue>> event_sink_;
-  //   scoped_refptr<RTCDataChannel> data_channel_;
+   private:
+    std::unique_ptr<EventChannel<EncodableValue>> event_channel_;
+    std::unique_ptr<EventSink<EncodableValue>> event_sink_;
+    // scoped_refptr<RTCDataChannel> data_channel_;
 };
 
 class FlutterDataChannel {
-  //  public:
-  //   FlutterDataChannel(FlutterWebRTCBase *base) : base_(base) {}
+   public:
+    FlutterDataChannel(FlutterWebRTCBase *base) : base_(base) {}
 
-  //   void CreateDataChannel(const std::string& peerConnectionId,
-  //                          const std::string& label,
-  //                          const EncodableMap &dataChannelDict,
-  //                          RTCPeerConnection *pc,
-  //                          std::unique_ptr<MethodResult<EncodableValue>>);
+    void CreateDataChannel(const std::string& peerConnectionId,
+                           const std::string& label,
+                           const EncodableMap &dataChannelDict,
+                          //  RTCPeerConnection *pc,
+                           std::unique_ptr<MethodResult<EncodableValue>>);
 
-  //   void DataChannelSend(RTCDataChannel *data_channel, const std::string
-  //   &type,
-  //                        const EncodableValue &data,
-  //                        std::unique_ptr<MethodResult<EncodableValue>>);
+    void DataChannelSend(
+                        //  RTCDataChannel *data_channel,
+                         const std::string &type,
+                         const EncodableValue &data,
+                         std::unique_ptr<MethodResult<EncodableValue>>);
 
-  //   void DataChannelClose(RTCDataChannel *data_channel,
-  //                         std::unique_ptr<MethodResult<EncodableValue>>);
+    void DataChannelClose(
+                          // RTCDataChannel *data_channel,
+                          std::unique_ptr<MethodResult<EncodableValue>>);
 
-  //   RTCDataChannel *DataChannelFormId(int id);
+    // RTCDataChannel *DataChannelFormId(int id);
 
-  //  private:
-  //   FlutterWebRTCBase *base_;
+   private:
+    FlutterWebRTCBase *base_;
 };
 
 }  // namespace flutter_webrtc_plugin

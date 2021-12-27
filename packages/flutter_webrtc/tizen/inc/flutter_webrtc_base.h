@@ -16,19 +16,10 @@
 #include <memory>
 #include <mutex>
 
-// #include "libwebrtc.h"
-// #include "rtc_audio_device.h"
-// #include "rtc_media_stream.h"
-// #include "rtc_media_track.h"
-// #include "rtc_mediaconstraints.h"
-// #include "rtc_peerconnection.h"
-// #include "rtc_peerconnection_factory.h"
-// #include "rtc_video_device.h"
-// #include "uuidxx.h"
+#include "uuidxx.h"
 
 namespace flutter_webrtc_plugin {
 
-// using namespace libwebrtc;
 using namespace flutter;
 
 class FlutterVideoRenderer;

@@ -1,21 +1,22 @@
 #include "flutter_peerconnection.h"
 
-// #include "base/scoped_ref_ptr.h"
+#include "libwebrtc/base/scoped_ref_ptr.h"
 #include "flutter_data_channel.h"
 // #include "rtc_dtmf_sender.h"
 // #include "rtc_rtp_parameters.h"
 
+
 namespace flutter_webrtc_plugin {
-/*
+
 std::string RTCMediaTypeToString(RTCMediaType type) {
   switch (type) {
-    case libwebrtc::RTCMediaType::ANY:
+    case RTCMediaType::ANY:
       return "any";
-    case libwebrtc::RTCMediaType::AUDIO:
+    case RTCMediaType::AUDIO:
       return "audio";
-    case libwebrtc::RTCMediaType::VIDEO:
+    case RTCMediaType::VIDEO:
       return "video";
-    case libwebrtc::RTCMediaType::DATA:
+    case RTCMediaType::DATA:
       return "data";
     default:
       return "";
@@ -37,6 +38,7 @@ std::string transceiverDirectionString(RTCRtpTransceiverDirection direction) {
   return "";
 }
 
+/*
 EncodableMap rtpParametersToMap(
     libwebrtc::scoped_refptr<libwebrtc::RTCRtpParameters> rtpParameters) {
   EncodableMap info;
@@ -69,13 +71,12 @@ EncodableMap rtpParametersToMap(
        encodings.std_vector()) {
     EncodableMap map;
     map[EncodableValue("active")] = EncodableValue(encoding->active());
-    map[EncodableValue("maxBitrate")] =
-EncodableValue(encoding->max_bitrate_bps()); map[EncodableValue("minBitrate")] =
-EncodableValue(encoding->min_bitrate_bps()); map[EncodableValue("maxFramerate")]
-= EncodableValue(encoding->max_framerate());
+    map[EncodableValue("maxBitrate")] = EncodableValue(encoding->max_bitrate_bps());
+    map[EncodableValue("minBitrate")] = EncodableValue(encoding->min_bitrate_bps());
+    map[EncodableValue("maxFramerate")] = EncodableValue(encoding->max_framerate());
     map[EncodableValue("scaleResolutionDownBy")] =
         EncodableValue(encoding->scale_resolution_down_by());
-    map[EncodableValue("ssrc")] = EncodableValue((int)encoding->ssrc());
+    map[EncodableValue("ssrc")] = EncodableValue((long)encoding->ssrc());
     encodings_info.push_back(EncodableValue(map));
   }
   info[EncodableValue("encodings")] = EncodableValue(encodings_info);
@@ -92,13 +93,11 @@ EncodableValue(encoding->min_bitrate_bps()); map[EncodableValue("maxFramerate")]
     EncodableMap param;
     auto parameters = codec->parameters();
     for (auto item : parameters.std_vector()) {
-      param[EncodableValue(item.first.std_string())] =
-EncodableValue(item.second.std_string());
+      param[EncodableValue(item.first.std_string())] = EncodableValue(item.second.std_string());
     }
     map[EncodableValue("parameters")] = EncodableValue(param);
 
-    map[EncodableValue("kind")] =
-EncodableValue(RTCMediaTypeToString(codec->kind()));
+    map[EncodableValue("kind")] = EncodableValue(RTCMediaTypeToString(codec->kind()));
 
     codecs_info.push_back(EncodableValue(map));
   }
@@ -154,8 +153,8 @@ EncodableMap rtpSenderToMap(
       dtmfSenderToMap(sender->dtmf_sender(), id));
   info[EncodableValue("rtpParameters")] = EncodableValue(
       rtpParametersToMap(sender->parameters()));
-  info[EncodableValue("track")] =
-EncodableValue(mediaTrackToMap(sender->track())); return info;
+  info[EncodableValue("track")] =  EncodableValue(mediaTrackToMap(sender->track()));
+  return info;
 }
 
 std::string trackStateToString(libwebrtc::RTCMediaTrack::RTCTrackState state) {
@@ -172,12 +171,11 @@ std::string trackStateToString(libwebrtc::RTCMediaTrack::RTCTrackState state) {
 EncodableMap rtpReceiverToMap(
     libwebrtc::scoped_refptr<libwebrtc::RTCRtpReceiver> receiver) {
   EncodableMap info;
-  info[EncodableValue("receiverId")] =
-EncodableValue(receiver->id().std_string());
+  info[EncodableValue("receiverId")] =  EncodableValue(receiver->id().std_string());
   info[EncodableValue("rtpParameters")] = EncodableValue(
       rtpParametersToMap(receiver->parameters()));
-  info[EncodableValue("track")] =
-EncodableValue(mediaTrackToMap(receiver->track())); return info;
+  info[EncodableValue("track")] =  EncodableValue(mediaTrackToMap(receiver->track()));
+  return info;
 }
 
 EncodableMap transceiverToMap(scoped_refptr<RTCRtpTransceiver> transceiver) {
@@ -187,25 +185,21 @@ EncodableMap transceiverToMap(scoped_refptr<RTCRtpTransceiver> transceiver) {
   info[EncodableValue("mid")] =  EncodableValue(mid);
   info[EncodableValue("direction")] = EncodableValue(
       transceiverDirectionString(transceiver->direction()));
-  info[EncodableValue("sender")] =
-EncodableValue(rtpSenderToMap(transceiver->sender()));
-  info[EncodableValue("receiver")] =
-EncodableValue(rtpReceiverToMap(transceiver->receiver())); return info;
+  info[EncodableValue("sender")] =  EncodableValue(rtpSenderToMap(transceiver->sender()));
+  info[EncodableValue("receiver")] =  EncodableValue(rtpReceiverToMap(transceiver->receiver()));
+  return info;
 }
 
 EncodableMap mediaStreamToMap(scoped_refptr<RTCMediaStream> stream,
                               std::string id) {
   EncodableMap params;
-  params[EncodableValue("streamId")] =
-EncodableValue(stream->id().std_string()); params[EncodableValue("ownerTag")] =
-EncodableValue(id); EncodableList audioTracks; auto audio_tracks =
-stream->audio_tracks(); for (scoped_refptr<RTCAudioTrack> val :
-audio_tracks.std_vector()) { audioTracks.push_back(
-EncodableValue(mediaTrackToMap(val)));
-  }
-  params[EncodableValue("audioTracks")] =  EncodableValue(audioTracks);
-
-  EncodableList videoTracks;
+  params[EncodableValue("streamId")] =  EncodableValue(stream->id().std_string());
+  params[EncodableValue("ownerTag")] =  EncodableValue(id);
+  EncodableList audioTracks;
+  auto audio_tracks = stream->audio_tracks();
+  for (scoped_refptr<RTCAudioTrack> val : audio_tracks.std_vector()) {
+    audioTracks.push_back( EncodableValue(mediaTrackToMap(val)));
+  }libwebrec/base/scoped_ref_ptr.h
   auto video_tracks = stream->video_tracks();
   for (scoped_refptr<RTCVideoTrack> val : video_tracks.std_vector()) {
     videoTracks.push_back( EncodableValue(mediaTrackToMap(val)));
@@ -213,11 +207,14 @@ EncodableValue(mediaTrackToMap(val)));
   params[EncodableValue("videoTracks")] =  EncodableValue(videoTracks);
   return params;
 }
+*/
+
 
 void FlutterPeerConnection::CreateRTCPeerConnection(
     const EncodableMap& configurationMap,
     const EncodableMap& constraintsMap,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
+/*      
   // std::cout << " configuration = " << configurationMap.StringValue() <<
   // std::endl;
   base_->ParseRTCConfiguration(configurationMap, base_->configuration_);
@@ -239,121 +236,124 @@ void FlutterPeerConnection::CreateRTCPeerConnection(
 
   base_->peerconnection_observers_[uuid] = std::move(observer);
 
+*/
   EncodableMap params;
-  params[EncodableValue("peerConnectionId")] =  EncodableValue(uuid);
+  // params[EncodableValue("peerConnectionId")] =  EncodableValue(uuid);
+
   result->Success(EncodableValue(params));
 }
 
 void FlutterPeerConnection::RTCPeerConnectionClose(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     const std::string& uuid,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
-  pc->Close();
+  // pc->Close();
   result->Success();
 }
 
 void FlutterPeerConnection::RTCPeerConnectionDispose(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     const std::string& uuid,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
-  auto it = base_->peerconnection_observers_.find(uuid);
-  if (it != base_->peerconnection_observers_.end())
-    base_->peerconnection_observers_.erase(it);
+  // auto it = base_->peerconnection_observers_.find(uuid);
+  // if (it != base_->peerconnection_observers_.end())
+  //   base_->peerconnection_observers_.erase(it);
   result->Success();
 }
 
 void FlutterPeerConnection::CreateOffer(
     const EncodableMap& constraintsMap,
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
-  scoped_refptr<RTCMediaConstraints> constraints =
-      base_->ParseMediaConstraints(constraintsMap);
-  std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
-  pc->CreateOffer(
-      [result_ptr](const libwebrtc::string sdp, const libwebrtc::string type) {
-        EncodableMap params;
-        params[EncodableValue("sdp")] =  EncodableValue(sdp.std_string());
-        params[EncodableValue("type")] =  EncodableValue(type.std_string());
-        result_ptr->Success(EncodableValue(params));
-      },
-      [result_ptr](const char* error) {
-        result_ptr->Error("createOfferFailed", error);
-      },
-      constraints);
+  // scoped_refptr<RTCMediaConstraints> constraints =
+  //     base_->ParseMediaConstraints(constraintsMap);
+  // std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
+  // pc->CreateOffer(
+  //     [result_ptr](const libwebrtc::string sdp, const libwebrtc::string type) {
+  //       EncodableMap params;
+  //       params[EncodableValue("sdp")] =  EncodableValue(sdp.std_string());
+  //       params[EncodableValue("type")] =  EncodableValue(type.std_string());
+  //       result_ptr->Success(EncodableValue(params));
+  //     },
+  //     [result_ptr](const char* error) {
+  //       result_ptr->Error("createOfferFailed", error);
+  //     },
+  //     constraints);
 }
 
 void FlutterPeerConnection::CreateAnswer(
     const EncodableMap& constraintsMap,
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
-  scoped_refptr<RTCMediaConstraints> constraints =
-      base_->ParseMediaConstraints(constraintsMap);
-  std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
-  pc->CreateAnswer(
-      [result_ptr](const libwebrtc::string sdp, const libwebrtc::string type) {
-        EncodableMap params;
-        params[EncodableValue("sdp")] = EncodableValue(sdp.std_string());
-        params[EncodableValue("type")] =  EncodableValue(type.std_string());
-        result_ptr->Success(EncodableValue(params));
-      },
-      [result_ptr](const std::string& error) {
-        result_ptr->Error("createAnswerFailed", error);
-      },
-      constraints);
+  // scoped_refptr<RTCMediaConstraints> constraints =
+  //     base_->ParseMediaConstraints(constraintsMap);
+  // std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
+  // pc->CreateAnswer(
+  //     [result_ptr](const libwebrtc::string sdp, const libwebrtc::string type) {
+  //       EncodableMap params;
+  //       params[EncodableValue("sdp")] = EncodableValue(sdp.std_string());
+  //       params[EncodableValue("type")] =  EncodableValue(type.std_string());
+  //       result_ptr->Success(EncodableValue(params));
+  //     },
+  //     [result_ptr](const std::string& error) {
+  //       result_ptr->Error("createAnswerFailed", error);
+  //     },
+  //     constraints);
 }
 
 void FlutterPeerConnection::SetLocalDescription(
-    RTCSessionDescription* sdp,
-    RTCPeerConnection* pc,
+    // RTCSessionDescription* sdp,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
-  pc->SetLocalDescription(
-      sdp->sdp(), sdp->type(), [result_ptr]() { result_ptr->Success(); },
-      [result_ptr](const char* error) {
-        result_ptr->Error("setLocalDescriptionFailed", error);
-      });
+  // pc->SetLocalDescription(
+  //     sdp->sdp(), sdp->type(), [result_ptr]() { result_ptr->Success(); },
+  //     [result_ptr](const char* error) {
+  //       result_ptr->Error("setLocalDescriptionFailed", error);
+  //     });
 }
 
 void FlutterPeerConnection::SetRemoteDescription(
-    RTCSessionDescription* sdp,
-    RTCPeerConnection* pc,
+    // RTCSessionDescription* sdp,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
-  pc->SetRemoteDescription(
-      sdp->sdp(), sdp->type(), [result_ptr]() { result_ptr->Success(); },
-      [result_ptr](const char* error) {
-        result_ptr->Error("setRemoteDescriptionFailed", error);
-      });
+  // pc->SetRemoteDescription(
+  //     sdp->sdp(), sdp->type(), [result_ptr]() { result_ptr->Success(); },
+  //     [result_ptr](const char* error) {
+  //       result_ptr->Error("setRemoteDescriptionFailed", error);
+  //     });
 }
 
 void FlutterPeerConnection::GetLocalDescription(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  pc->GetLocalDescription(
-      [result_ptr](const char* sdp, const char* type) {
-        EncodableMap params;
-        params[EncodableValue("sdp")] = sdp;
-        params[EncodableValue("type")] = type;
-        result_ptr->Success(EncodableValue(params));
-      },
-      [result_ptr](const std::string& error) { result_ptr->Success(); });
+  // pc->GetLocalDescription(
+  //     [result_ptr](const char* sdp, const char* type) {
+  //       EncodableMap params;
+  //       params[EncodableValue("sdp")] = sdp;
+  //       params[EncodableValue("type")] = type;
+  //       result_ptr->Success(EncodableValue(params));
+  //     },
+  //     [result_ptr](const std::string& error) { result_ptr->Success(); });
 }
 
 void FlutterPeerConnection::GetRemoteDescription(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  pc->GetRemoteDescription(
-      [result_ptr](const char* sdp, const char* type) {
-        EncodableMap params;
-        params[EncodableValue("sdp")] = sdp;
-        params[EncodableValue("type")] = type;
-        result_ptr->Success(EncodableValue(params));
-      },
-      [result_ptr](const std::string& error) { result_ptr->Success(); });
+  // pc->GetRemoteDescription(
+  //     [result_ptr](const char* sdp, const char* type) {
+  //       EncodableMap params;
+  //       params[EncodableValue("sdp")] = sdp;
+  //       params[EncodableValue("type")] = type;
+  //       result_ptr->Success(EncodableValue(params));
+  //     },
+  //     [result_ptr](const std::string& error) { result_ptr->Success(); });
 }
 
+/*
 scoped_refptr<RTCRtpTransceiverInit>
 FlutterPeerConnection::mapToRtpTransceiverInit(const EncodableMap& params) {
   EncodableList streamIds = findList(params, "streamIds");
@@ -445,6 +445,7 @@ FlutterPeerConnection::mapToEncoding(const EncodableMap& params) {
 
   return encoding;
 }
+*/
 
 RTCMediaType stringToMediaType(const std::string& mediaType) {
   RTCMediaType type = RTCMediaType::ANY;
@@ -456,211 +457,211 @@ RTCMediaType stringToMediaType(const std::string& mediaType) {
 }
 
 void FlutterPeerConnection::AddTransceiver(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     const std::string& trackId,
     const std::string& mediaType,
     const EncodableMap& transceiverInit,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
 
-  RTCMediaTrack* track = base_->MediaTrackForId(trackId);
-  RTCMediaType type = stringToMediaType(mediaType);
+  // RTCMediaTrack* track = base_->MediaTrackForId(trackId);
+  // RTCMediaType type = stringToMediaType(mediaType);
 
-  if (0 < transceiverInit.size()) {
-    auto transceiver =
-        track != nullptr ? pc->AddTransceiver(
-                               track, mapToRtpTransceiverInit(transceiverInit))
-                         : pc->AddTransceiver(
-                               type, mapToRtpTransceiverInit(transceiverInit));
-    if (nullptr != transceiver.get()) {
-      result_ptr->Success(EncodableValue(transceiverToMap(transceiver)));
-      return;
-    }
-    result_ptr->Error("AddTransceiver(track | mediaType, init)",
-                      "AddTransceiver error");
-  } else {
-    auto transceiver =
-        track != nullptr ? pc->AddTransceiver(track) : pc->AddTransceiver(type);
-    if (nullptr != transceiver.get()) {
-      result_ptr->Success(EncodableValue(transceiverToMap(transceiver)));
-      return;
-    }
-    result_ptr->Error("AddTransceiver(track, mediaType)",
-                      "AddTransceiver error");
-  }
+  // if (0 < transceiverInit.size()) {
+  //   auto transceiver =
+  //       track != nullptr ? pc->AddTransceiver(
+  //                              track, mapToRtpTransceiverInit(transceiverInit))
+  //                        : pc->AddTransceiver(
+  //                              type, mapToRtpTransceiverInit(transceiverInit));
+  //   if (nullptr != transceiver.get()) {
+  //     result_ptr->Success(EncodableValue(transceiverToMap(transceiver)));
+  //     return;
+  //   }
+  //   result_ptr->Error("AddTransceiver(track | mediaType, init)",
+  //                     "AddTransceiver error");
+  // } else {
+  //   auto transceiver =
+  //       track != nullptr ? pc->AddTransceiver(track) : pc->AddTransceiver(type);
+  //   if (nullptr != transceiver.get()) {
+  //     result_ptr->Success(EncodableValue(transceiverToMap(transceiver)));
+  //     return;
+  //   }
+  //   result_ptr->Error("AddTransceiver(track, mediaType)",
+  //                     "AddTransceiver error");
+  // }
 }
 
 void FlutterPeerConnection::GetTransceivers(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
   EncodableMap map;
   EncodableList info;
-  auto transceivers = pc->transceivers();
-  for (scoped_refptr<RTCRtpTransceiver> transceiver :
-       transceivers.std_vector()) {
-    info.push_back(EncodableValue(transceiverToMap(transceiver)));
-  }
-  map[EncodableValue("transceivers")] = EncodableValue(info);
+  // auto transceivers = pc->transceivers();
+  // for (scoped_refptr<RTCRtpTransceiver> transceiver :
+  //      transceivers.std_vector()) {
+  //   info.push_back(EncodableValue(transceiverToMap(transceiver)));
+  // }
+  // map[EncodableValue("transceivers")] = EncodableValue(info);
   result_ptr->Success(EncodableValue(map));
 }
 
 void FlutterPeerConnection::GetReceivers(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
   EncodableMap map;
   EncodableList info;
-  auto receivers = pc->receivers();
-  for (scoped_refptr<RTCRtpReceiver> receiver : receivers.std_vector()) {
-    info.push_back(EncodableValue(rtpReceiverToMap(receiver)));
-  }
-  map[EncodableValue("receivers")] = EncodableValue(info);
+  // auto receivers = pc->receivers();
+  // for (scoped_refptr<RTCRtpReceiver> receiver : receivers.std_vector()) {
+  //   info.push_back(EncodableValue(rtpReceiverToMap(receiver)));
+  // }
+  // map[EncodableValue("receivers")] = EncodableValue(info);
   result_ptr->Success(EncodableValue(map));
 }
 
 void FlutterPeerConnection::RtpSenderDispose(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::string rtpSenderId,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
 
-  auto sender = GetRtpSenderById(pc, rtpSenderId);
-  if (nullptr == sender.get()) {
-    result_ptr->Error("rtpSenderDispose", "sender is null");
-    return;
-  }
+  // auto sender = GetRtpSenderById(pc, rtpSenderId);
+  // if (nullptr == sender.get()) {
+  //   result_ptr->Error("rtpSenderDispose", "sender is null");
+  //   return;
+  // }
   // TODO RtpSenderDispose
   result_ptr->Success();
 }
 
 void FlutterPeerConnection::RtpSenderSetTrack(
-    RTCPeerConnection* pc,
-    RTCMediaTrack* track,
+    // RTCPeerConnection* pc,
+    // RTCMediaTrack* track,
     std::string rtpSenderId,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  auto sender = GetRtpSenderById(pc, rtpSenderId);
-  if (nullptr == sender.get()) {
-    result_ptr->Error("rtpSenderDispose", "sender is null");
-    return;
-  }
-  sender->set_track(track);
+  // auto sender = GetRtpSenderById(pc, rtpSenderId);
+  // if (nullptr == sender.get()) {
+  //   result_ptr->Error("rtpSenderDispose", "sender is null");
+  //   return;
+  // }
+  // sender->set_track(track);
   result_ptr->Success();
 }
 
 void FlutterPeerConnection::RtpSenderReplaceTrack(
-    RTCPeerConnection* pc,
-    RTCMediaTrack* track,
+    // RTCPeerConnection* pc,
+    // RTCMediaTrack* track,
     std::string rtpSenderId,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  auto sender = GetRtpSenderById(pc, rtpSenderId);
-  if (nullptr == sender.get()) {
-    result_ptr->Error("rtpSenderDispose", "sender is null");
-    return;
-  }
+  // auto sender = GetRtpSenderById(pc, rtpSenderId);
+  // if (nullptr == sender.get()) {
+  //   result_ptr->Error("rtpSenderDispose", "sender is null");
+  //   return;
+  // }
   // TODO RtpSenderReplaceTrack
   result_ptr->Success();
 }
 
-scoped_refptr<RTCRtpParameters> FlutterPeerConnection::updateRtpParameters(
-    EncodableMap newParameters,
-    scoped_refptr<RTCRtpParameters> parameters) {
-  EncodableList encodings = findList(newParameters, "encodings");
-  auto encoding = encodings.begin();
-  auto params = parameters->encodings();
-  for (auto param : params.std_vector()) {
-    if (encoding != encodings.end()) {
-      EncodableMap map = GetValue<EncodableMap>(*encoding);
-      EncodableValue value = findEncodableValue(map, "active");
-      if (!value.IsNull()) {
-        param->set_active(GetValue<bool>(value));
-      }
+// scoped_refptr<RTCRtpParameters> FlutterPeerConnection::updateRtpParameters(
+//     EncodableMap newParameters,
+//     scoped_refptr<RTCRtpParameters> parameters) {
+//   EncodableList encodings = findList(newParameters, "encodings");
+//   auto encoding = encodings.begin();
+//   auto params = parameters->encodings();
+//   for (auto param : params.std_vector()) {
+//     if (encoding != encodings.end()) {
+//       EncodableMap map = GetValue<EncodableMap>(*encoding);
+//       EncodableValue value = findEncodableValue(map, "active");
+//       if (!value.IsNull()) {
+//         param->set_active(GetValue<bool>(value));
+//       }
 
-      value = findEncodableValue(map, "maxBitrate");
-      if (!value.IsNull()) {
-        param->set_max_bitrate_bps(GetValue<int>(value));
-      }
+//       value = findEncodableValue(map, "maxBitrate");
+//       if (!value.IsNull()) {
+//         param->set_max_bitrate_bps(GetValue<int>(value));
+//       }
 
-      value = findEncodableValue(map, "minBitrate");
-      if (!value.IsNull()) {
-        param->set_min_bitrate_bps(GetValue<int>(value));
-      }
+//       value = findEncodableValue(map, "minBitrate");
+//       if (!value.IsNull()) {
+//         param->set_min_bitrate_bps(GetValue<int>(value));
+//       }
 
-      value = findEncodableValue(map, "maxFramerate");
-      if (!value.IsNull()) {
-        param->set_max_framerate(GetValue<int>(value));
-      }
-      value = findEncodableValue(map, "numTemporalLayers");
-      if (!value.IsNull()) {
-        param->set_num_temporal_layers(GetValue<int>(value));
-      }
-      value = findEncodableValue(map, "scaleResolutionDownBy");
-      if (!value.IsNull()) {
-        param->set_scale_resolution_down_by(GetValue<int>(value));
-      }
+//       value = findEncodableValue(map, "maxFramerate");
+//       if (!value.IsNull()) {
+//         param->set_max_framerate(GetValue<int>(value));
+//       }
+//       value = findEncodableValue(map, "numTemporalLayers");
+//       if (!value.IsNull()) {
+//         param->set_num_temporal_layers(GetValue<int>(value));
+//       }
+//       value = findEncodableValue(map, "scaleResolutionDownBy");
+//       if (!value.IsNull()) {
+//         param->set_scale_resolution_down_by(GetValue<int>(value));
+//       }
 
-      encoding++;
-    }
-  }
+//       encoding++;
+//     }
+//   }
 
-  return parameters;
-}
+//   return parameters;
+// }
 
 void FlutterPeerConnection::RtpSenderSetParameters(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::string rtpSenderId,
     const EncodableMap& parameters,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
 
-  auto sender = GetRtpSenderById(pc, rtpSenderId);
-  if (nullptr == sender.get()) {
-    result_ptr->Error("rtpSenderDispose", "sender is null");
-    return;
-  }
+  // auto sender = GetRtpSenderById(pc, rtpSenderId);
+  // if (nullptr == sender.get()) {
+  //   result_ptr->Error("rtpSenderDispose", "sender is null");
+  //   return;
+  // }
 
-  auto param = sender->parameters();
-  param = updateRtpParameters(parameters, param);
-  sender->set_parameters(param);
+  // auto param = sender->parameters();
+  // param = updateRtpParameters(parameters, param);
+  // sender->set_parameters(param);
 
   result_ptr->Success();
 }
 
 void FlutterPeerConnection::RtpTransceiverStop(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::string rtpTransceiverId,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
 
-  auto transceiver = getRtpTransceiverById(pc, rtpTransceiverId);
-  if (nullptr == transceiver.get()) {
-    result_ptr->Error("rtpTransceiverStop", "transceiver is null");
-  }
-  transceiver->StopInternal();
+  // auto transceiver = getRtpTransceiverById(pc, rtpTransceiverId);
+  // if (nullptr == transceiver.get()) {
+  //   result_ptr->Error("rtpTransceiverStop", "transceiver is null");
+  // }
+  // transceiver->StopInternal();
   result_ptr->Success();
 }
 
 void FlutterPeerConnection::RtpTransceiverGetCurrentDirection(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::string rtpTransceiverId,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
 
-  auto transceiver = getRtpTransceiverById(pc, rtpTransceiverId);
-  if (nullptr == transceiver.get()) {
-    result_ptr->Error("rtpTransceiverGetCurrentDirection",
-                      "transceiver is null");
-  }
+  // auto transceiver = getRtpTransceiverById(pc, rtpTransceiverId);
+  // if (nullptr == transceiver.get()) {
+  //   result_ptr->Error("rtpTransceiverGetCurrentDirection",
+  //                     "transceiver is null");
+  // }
   EncodableMap map;
-  map[EncodableValue("result")] =
-      EncodableValue(transceiverDirectionString(transceiver->direction()));
+  // map[EncodableValue("result")] =
+  //     EncodableValue(transceiverDirectionString(transceiver->direction()));
   result_ptr->Success(EncodableValue(map));
 }
 
 void FlutterPeerConnection::SetConfiguration(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     const EncodableMap& configuration,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
@@ -671,7 +672,7 @@ void FlutterPeerConnection::SetConfiguration(
 }
 
 void FlutterPeerConnection::CaptureFrame(
-    RTCVideoTrack* track,
+    // RTCVideoTrack* track,
     std::string path,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
@@ -681,161 +682,161 @@ void FlutterPeerConnection::CaptureFrame(
   result_ptr->Success();
 }
 
-scoped_refptr<RTCRtpTransceiver> FlutterPeerConnection::getRtpTransceiverById(
-    RTCPeerConnection* pc,
-    std::string id) {
-  scoped_refptr<RTCRtpTransceiver> result;
-  auto transceivers = pc->transceivers();
-  for (scoped_refptr<RTCRtpTransceiver> transceiver :
-       transceivers.std_vector()) {
-    std::string mid = transceiver->mid().std_string();
-    if (nullptr == result.get() && 0 == id.compare(mid)) {
-      result = transceiver;
-    }
-  }
-  return result;
-}
+// scoped_refptr<RTCRtpTransceiver> FlutterPeerConnection::getRtpTransceiverById(
+//     RTCPeerConnection* pc,
+//     std::string id) {
+//   scoped_refptr<RTCRtpTransceiver> result;
+//   auto transceivers = pc->transceivers();
+//   for (scoped_refptr<RTCRtpTransceiver> transceiver :
+//        transceivers.std_vector()) {
+//     std::string mid = transceiver->mid().std_string();
+//     if (nullptr == result.get() && 0 == id.compare(mid)) {
+//       result = transceiver;
+//     }
+//   }
+//   return result;
+// }
 
 void FlutterPeerConnection::RtpTransceiverSetDirection(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::string rtpTransceiverId,
     std::string direction,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  auto transceiver = getRtpTransceiverById(pc, rtpTransceiverId);
-  if (nullptr == transceiver.get()) {
-    result_ptr->Error("RtpTransceiverSetDirection", " transceiver is null ");
-    return;
-  }
-  auto result = transceiver->SetDirectionWithError(
-      stringToTransceiverDirection(direction));
-  if (result.std_string() == "") {
-    result_ptr->Success();
-  } else {
-    result_ptr->Error("RtpTransceiverSetDirection", result.std_string());
-  }
+  // auto transceiver = getRtpTransceiverById(pc, rtpTransceiverId);
+  // if (nullptr == transceiver.get()) {
+  //   result_ptr->Error("RtpTransceiverSetDirection", " transceiver is null ");
+  //   return;
+  // }
+  // auto result = transceiver->SetDirectionWithError(
+  //     stringToTransceiverDirection(direction));
+  // if (result.std_string() == "") {
+  //   result_ptr->Success();
+  // } else {
+  //   result_ptr->Error("RtpTransceiverSetDirection", result.std_string());
+  // }
 }
 
 void FlutterPeerConnection::GetSenders(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
 
   EncodableMap map;
-  EncodableList info;
-  auto senders = pc->senders();
-  for (scoped_refptr<RTCRtpSender> sender : senders.std_vector()) {
-    info.push_back(EncodableValue(rtpSenderToMap(sender)));
-  }
-  map[EncodableValue("senders")] = EncodableValue(info);
+  // EncodableList info;
+  // auto senders = pc->senders();
+  // for (scoped_refptr<RTCRtpSender> sender : senders.std_vector()) {
+  //   info.push_back(EncodableValue(rtpSenderToMap(sender)));
+  // }
+  // map[EncodableValue("senders")] = EncodableValue(info);
   result_ptr->Success(EncodableValue(map));
 }
 
 void FlutterPeerConnection::AddIceCandidate(
-    RTCIceCandidate* candidate,
-    RTCPeerConnection* pc,
+    // RTCIceCandidate* candidate,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
-  pc->AddCandidate(candidate->sdp_mid(), candidate->sdp_mline_index(),
-                   candidate->candidate());
+  // pc->AddCandidate(candidate->sdp_mid(), candidate->sdp_mline_index(),
+  //                  candidate->candidate());
 
   result->Success();
 }
 
 void FlutterPeerConnection::GetStats(
     const std::string& track_id,
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
   // TODO
 }
 
 void FlutterPeerConnection::MediaStreamAddTrack(
-    scoped_refptr<RTCMediaStream> stream,
-    scoped_refptr<RTCMediaTrack> track,
+    // scoped_refptr<RTCMediaStream> stream,
+    // scoped_refptr<RTCMediaTrack> track,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  std::string kind = track->kind().std_string();
-  if (0 == kind.compare("audio")) {
-    stream->AddTrack(static_cast<RTCAudioTrack*>(track.get()));
-  } else if (0 == kind.compare("video")) {
-    stream->AddTrack(static_cast<RTCVideoTrack*>(track.get()));
-  }
+  // std::string kind = track->kind().std_string();
+  // if (0 == kind.compare("audio")) {
+  //   stream->AddTrack(static_cast<RTCAudioTrack*>(track.get()));
+  // } else if (0 == kind.compare("video")) {
+  //   stream->AddTrack(static_cast<RTCVideoTrack*>(track.get()));
+  // }
 
   result_ptr->Success();
 }
 
 void FlutterPeerConnection::MediaStreamRemoveTrack(
-    scoped_refptr<RTCMediaStream> stream,
-    scoped_refptr<RTCMediaTrack> track,
+    // scoped_refptr<RTCMediaStream> stream,
+    // scoped_refptr<RTCMediaTrack> track,
     std::unique_ptr<MethodResult<EncodableValue>> resulte) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(resulte.release());
-  std::string kind = track->kind().std_string();
-  if (0 == kind.compare("audio")) {
-    stream->RemoveTrack(static_cast<RTCAudioTrack*>(track.get()));
-  } else if (0 == kind.compare("video")) {
-    stream->RemoveTrack(static_cast<RTCVideoTrack*>(track.get()));
-  }
+  // std::string kind = track->kind().std_string();
+  // if (0 == kind.compare("audio")) {
+  //   stream->RemoveTrack(static_cast<RTCAudioTrack*>(track.get()));
+  // } else if (0 == kind.compare("video")) {
+  //   stream->RemoveTrack(static_cast<RTCVideoTrack*>(track.get()));
+  // }
 
   result_ptr->Success();
 }
 
 void FlutterPeerConnection::AddTrack(
-    RTCPeerConnection* pc,
-    scoped_refptr<RTCMediaTrack> track,
+    // RTCPeerConnection* pc,
+    // scoped_refptr<RTCMediaTrack> track,
     std::list<std::string> streamIds,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
   std::shared_ptr<MethodResult<EncodableValue>> result_ptr(result.release());
-  std::string kind = track->kind().std_string();
-  std::vector<string> streamids;
+  // std::string kind = track->kind().std_string();
+  std::vector<std::string> streamids;
   for (std::string item : streamIds) {
     streamids.push_back(item.c_str());
   }
-  if (0 == kind.compare("audio")) {
-    auto sender = pc->AddTrack((RTCAudioTrack*)track.get(), streamids);
-    if (sender.get() != nullptr) {
-      result_ptr->Success(EncodableValue(rtpSenderToMap(sender)));
-      return;
-    }
-  } else if (0 == kind.compare("video")) {
-    auto sender = pc->AddTrack((RTCVideoTrack*)track.get(), streamids);
-    if (sender.get() != nullptr) {
-      result_ptr->Success(EncodableValue(rtpSenderToMap(sender)));
-      return;
-    }
-  }
+  // if (0 == kind.compare("audio")) {
+  //   auto sender = pc->AddTrack((RTCAudioTrack*)track.get(), streamids);
+  //   if (sender.get() != nullptr) {
+  //     result_ptr->Success(EncodableValue(rtpSenderToMap(sender)));
+  //     return;
+  //   }
+  // } else if (0 == kind.compare("video")) {
+  //   auto sender = pc->AddTrack((RTCVideoTrack*)track.get(), streamids);
+  //   if (sender.get() != nullptr) {
+  //     result_ptr->Success(EncodableValue(rtpSenderToMap(sender)));
+  //     return;
+  //   }
+  // }
   result->Success();
 }
 
-libwebrtc::scoped_refptr<libwebrtc::RTCRtpSender>
-FlutterPeerConnection::GetRtpSenderById(RTCPeerConnection* pc, std::string id) {
-  libwebrtc::scoped_refptr<libwebrtc::RTCRtpSender> result;
-  auto senders = pc->senders();
-  for (scoped_refptr<RTCRtpSender> item : senders.std_vector()) {
-    std::string itemId = item->id().std_string();
-    if (nullptr == result.get() && 0 == id.compare(itemId)) {
-      result = item;
-    }
-  }
-  return result;
-}
+// libwebrtc::scoped_refptr<libwebrtc::RTCRtpSender>
+// FlutterPeerConnection::GetRtpSenderById(RTCPeerConnection* pc, std::string id) {
+//   libwebrtc::scoped_refptr<libwebrtc::RTCRtpSender> result;
+//   auto senders = pc->senders();
+//   for (scoped_refptr<RTCRtpSender> item : senders.std_vector()) {
+//     std::string itemId = item->id().std_string();
+//     if (nullptr == result.get() && 0 == id.compare(itemId)) {
+//       result = item;
+//     }
+//   }
+//   return result;
+// }
 
 void FlutterPeerConnection::RemoveTrack(
-    RTCPeerConnection* pc,
+    // RTCPeerConnection* pc,
     std::string senderId,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
-  auto sender = GetRtpSenderById(pc, senderId);
-  if (nullptr == sender.get()) {
-    result->Error("RemoveTrack", "not find RtpSender ");
-  }
+  // auto sender = GetRtpSenderById(pc, senderId);
+  // if (nullptr == sender.get()) {
+  //   result->Error("RemoveTrack", "not find RtpSender ");
+  // }
 
   EncodableMap map;
-  map[EncodableValue("result")] = EncodableValue(pc->RemoveTrack(sender));
+  // map[EncodableValue("result")] = EncodableValue(pc->RemoveTrack(sender));
 
   result->Success(EncodableValue(map));
 }
 
 FlutterPeerConnectionObserver::FlutterPeerConnectionObserver(
     FlutterWebRTCBase* base,
-    scoped_refptr<RTCPeerConnection> peerconnection,
+    // scoped_refptr<RTCPeerConnection> peerconnection,
     BinaryMessenger* messenger,
     const std::string& channel_name,
     std::string& peerConnectionId)
@@ -843,7 +844,7 @@ FlutterPeerConnectionObserver::FlutterPeerConnectionObserver(
           messenger,
           channel_name,
           &StandardMethodCodec::GetInstance())),
-      peerconnection_(peerconnection),
+      // peerconnection_(peerconnection),
       base_(base),
       id_(peerConnectionId) {
   auto handler = std::make_unique<StreamHandlerFunctions<EncodableValue>>(
@@ -860,9 +861,10 @@ FlutterPeerConnectionObserver::FlutterPeerConnectionObserver(
       });
 
   event_channel_->SetStreamHandler(std::move(handler));
-  peerconnection->RegisterRTCPeerConnectionObserver(this);
+  // peerconnection->RegisterRTCPeerConnectionObserver(this);
 }
 
+/*
 static const char* iceConnectionStateString(RTCIceConnectionState state) {
   switch (state) {
     case RTCIceConnectionStateNew:
@@ -949,11 +951,9 @@ void FlutterPeerConnectionObserver::OnIceCandidate(
     EncodableMap params;
     params[EncodableValue("event")] = "onCandidate";
     EncodableMap cand;
-    cand[EncodableValue("candidate")] =
-EncodableValue(candidate->candidate().std_string());
-    cand[EncodableValue("sdpMLineIndex")] =
-EncodableValue(candidate->sdp_mline_index()); cand[EncodableValue("sdpMid")] =
-EncodableValue(candidate->sdp_mid().std_string());
+    cand[EncodableValue("candidate")] = EncodableValue(candidate->candidate().std_string());
+    cand[EncodableValue("sdpMLineIndex")] = EncodableValue(candidate->sdp_mline_index());
+    cand[EncodableValue("sdpMid")] = EncodableValue(candidate->sdp_mid().std_string());
     params[EncodableValue("candidate")] = EncodableValue(cand);
     event_sink_->Success(EncodableValue(params));
   }
@@ -971,10 +971,9 @@ void FlutterPeerConnectionObserver::OnAddStream(
     auto audio_tracks = stream->audio_tracks();
     for (scoped_refptr<RTCAudioTrack> track : audio_tracks.std_vector()) {
       EncodableMap audioTrack;
-      audioTrack[EncodableValue("id")] =
-EncodableValue(track->id().std_string()); audioTrack[EncodableValue("label")] =
-EncodableValue(track->id().std_string()); audioTrack[EncodableValue("kind")] =
-EncodableValue(track->kind().std_string());
+      audioTrack[EncodableValue("id")] = EncodableValue(track->id().std_string());
+      audioTrack[EncodableValue("label")] = EncodableValue(track->id().std_string());
+      audioTrack[EncodableValue("kind")] = EncodableValue(track->kind().std_string());
       audioTrack[EncodableValue("enabled")] = EncodableValue(track->enabled());
       audioTrack[EncodableValue("remote")] = EncodableValue(true);
       audioTrack[EncodableValue("readyState")] = "live";
@@ -988,10 +987,9 @@ EncodableValue(track->kind().std_string());
     for (scoped_refptr<RTCVideoTrack> track : video_tracks.std_vector()) {
       EncodableMap videoTrack;
 
-      videoTrack[EncodableValue("id")] =
-EncodableValue(track->id().std_string()); videoTrack[EncodableValue("label")] =
-EncodableValue(track->id().std_string()); videoTrack[EncodableValue("kind")] =
-EncodableValue(track->kind().std_string());
+      videoTrack[EncodableValue("id")] = EncodableValue(track->id().std_string());
+      videoTrack[EncodableValue("label")] = EncodableValue(track->id().std_string());
+      videoTrack[EncodableValue("kind")] = EncodableValue(track->kind().std_string());
       videoTrack[EncodableValue("enabled")] = EncodableValue(track->enabled());
       videoTrack[EncodableValue("remote")] = EncodableValue(true);
       videoTrack[EncodableValue("readyState")] = "live";
@@ -1009,8 +1007,7 @@ void FlutterPeerConnectionObserver::OnRemoveStream(
   if (event_sink_ != nullptr) {
     EncodableMap params;
     params[EncodableValue("event")] = "onRemoveStream";
-    params[EncodableValue("streamId")] =
-EncodableValue(stream->label().std_string());
+    params[EncodableValue("streamId")] = EncodableValue(stream->label().std_string());
     event_sink_->Success(EncodableValue(params));
   }
   RemoveStreamForId(stream->label().std_string());
@@ -1028,15 +1025,13 @@ void FlutterPeerConnectionObserver::OnAddTrack(
     if (event_sink_ != nullptr) {
       EncodableMap params;
       params[EncodableValue("event")] = "onAddTrack";
-      params[EncodableValue("streamId")] =
-EncodableValue(stream->label().std_string()); params[EncodableValue("trackId")]
-= EncodableValue(track->id().std_string());
+      params[EncodableValue("streamId")] = EncodableValue(stream->label().std_string());
+      params[EncodableValue("trackId")] = EncodableValue(track->id().std_string());
 
       EncodableMap audioTrack;
-      audioTrack[EncodableValue("id")] =
-EncodableValue(track->id().std_string()); audioTrack[EncodableValue("label")] =
-EncodableValue(track->id().std_string()); audioTrack[EncodableValue("kind")] =
-EncodableValue(track->kind().std_string());
+      audioTrack[EncodableValue("id")] = EncodableValue(track->id().std_string());
+      audioTrack[EncodableValue("label")] = EncodableValue(track->id().std_string());
+      audioTrack[EncodableValue("kind")] = EncodableValue(track->kind().std_string());
       audioTrack[EncodableValue("enabled")] = EncodableValue(track->enabled());
       audioTrack[EncodableValue("remote")] = EncodableValue(true);
       audioTrack[EncodableValue("readyState")] = "live";
@@ -1059,12 +1054,9 @@ void FlutterPeerConnectionObserver::OnTrack(
     }
     params[EncodableValue("event")] = "onTrack";
     params[EncodableValue("streams")] = EncodableValue(streams_info);
-    params[EncodableValue("track")] =
-EncodableValue(mediaTrackToMap(receiver->track()));
-    params[EncodableValue("receiver")] =
-EncodableValue(rtpReceiverToMap(receiver));
-    params[EncodableValue("transceiver")] =
-EncodableValue(transceiverToMap(transceiver));
+    params[EncodableValue("track")] = EncodableValue(mediaTrackToMap(receiver->track()));
+    params[EncodableValue("receiver")] = EncodableValue(rtpReceiverToMap(receiver));
+    params[EncodableValue("transceiver")] = EncodableValue(transceiverToMap(transceiver));
 
     event_sink_->Success(EncodableValue(params));
   }
@@ -1076,10 +1068,9 @@ void FlutterPeerConnectionObserver::OnRemoveTrack(
   if (event_sink_ != nullptr) {
     EncodableMap params;
     params[EncodableValue("event")] = "onRemoveTrack";
-    params[EncodableValue("trackId")] =
-EncodableValue(track->id().std_string()); params[EncodableValue("track")] =
-EncodableValue(mediaTrackToMap(track)); params[EncodableValue("receiver")] =
-EncodableValue(rtpReceiverToMap(receiver));
+    params[EncodableValue("trackId")] = EncodableValue(track->id().std_string());
+    params[EncodableValue("track")] = EncodableValue(mediaTrackToMap(track));
+    params[EncodableValue("receiver")] = EncodableValue(rtpReceiverToMap(receiver));
     event_sink_->Success(EncodableValue(params));
   }
 }
@@ -1139,8 +1130,7 @@ void FlutterPeerConnectionObserver::OnDataChannel(
     EncodableMap params;
     params[EncodableValue("event")] = "didOpenDataChannel";
     params[EncodableValue("id")] = EncodableValue(channel_id);
-    params[EncodableValue("label")] =
-EncodableValue(data_channel->label().std_string());
+    params[EncodableValue("label")] = EncodableValue(data_channel->label().std_string());
     event_sink_->Success(EncodableValue(params));
   }
 }
@@ -1160,11 +1150,12 @@ scoped_refptr<RTCMediaStream> FlutterPeerConnectionObserver::MediaStreamForId(
     return (*it).second;
   return nullptr;
 }
+*/
 
 void FlutterPeerConnectionObserver::RemoveStreamForId(const std::string& id) {
-  auto it = remote_streams_.find(id);
-  if (it != remote_streams_.end())
-    remote_streams_.erase(it);
+  // auto it = remote_streams_.find(id);
+  // if (it != remote_streams_.end())
+  //   remote_streams_.erase(it);
 }
-*/
+
 }  // namespace flutter_webrtc_plugin
