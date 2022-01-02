@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "flutter_tizen.h"
-
+#include "log.h"
 
 // class WebviewFlutterTizenPlugin : public flutter::Plugin {
 //  public:
@@ -70,6 +70,7 @@ class FlutterWebRTCPluginImpl : public FlutterWebRTCPlugin {
         messenger_(registrar->messenger()),
         textures_(registrar->texture_registrar()) {
     webrtc_ = std::make_unique<FlutterWebRTC>(this);
+    LOG_DEBUG("[MONG] FlutterWebRTCPluginImpl()-->");
   }
 
   // Called when a method is called on |channel_|;

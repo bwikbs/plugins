@@ -2,6 +2,7 @@
 
 #include "flutter_webrtc/flutter_web_r_t_c_plugin.h"
 
+#include "log.h"
 namespace flutter_webrtc_plugin {
 
 FlutterWebRTC::FlutterWebRTC(FlutterWebRTCPlugin* plugin)
@@ -17,6 +18,8 @@ FlutterWebRTC::~FlutterWebRTC() {}
 void FlutterWebRTC::HandleMethodCall(
     const flutter::MethodCall<EncodableValue>& method_call,
     std::unique_ptr<flutter::MethodResult<EncodableValue>> result) {
+  LOG_DEBUG("[MONG] HandleMethodCall() : %s\n",method_call.method_name().c_str());
+
   if (method_call.method_name().compare("createPeerConnection") == 0) {
     if (!method_call.arguments()) {
       result->Error("Bad Arguments", "Null arguments received");
@@ -354,12 +357,17 @@ void FlutterWebRTC::HandleMethodCall(
       result->Error("Bad Arguments", "Null constraints arguments received");
       return;
     }
+    LOG_DEBUG("[MONG] videoRendererSetSrcObject point 1\n");
+
     const EncodableMap params =
         GetValue<EncodableMap>(*method_call.arguments());
     const std::string stream_id = findString(params, "streamId");
     int64_t texture_id = findLongInt(params, "textureId");
+    LOG_DEBUG("[MONG] videoRendererSetSrcObject point 2\n");
 
     SetMediaStream(texture_id, stream_id);
+    LOG_DEBUG("[MONG] videoRendererSetSrcObject point 3\n");
+
     result->Success();
   } else if (method_call.method_name().compare(
                  "mediaStreamTrackSwitchCamera") == 0) {

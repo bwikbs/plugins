@@ -1,5 +1,7 @@
 #include "flutter_media_stream.h"
 
+#include "log.h"
+
 #define DEFAULT_WIDTH 640
 #define DEFAULT_HEIGHT 480
 #define DEFAULT_FPS 30
@@ -9,12 +11,16 @@ namespace flutter_webrtc_plugin {
 void FlutterMediaStream::GetUserMedia(
     const EncodableMap& constraints,
     std::unique_ptr<MethodResult<EncodableValue>> result) {
+  LOG_DEBUG("[MONG] FlutterMediaStream::GetUserMedia\n");
+
   std::string uuid = base_->GenerateUUID();
   scoped_refptr<RTCMediaStream> stream =
       base_->factory_->CreateStream(uuid.c_str());
 
   EncodableMap params;
   params[EncodableValue("streamId")] = EncodableValue(uuid);
+  LOG_DEBUG("[MONG] FlutterMediaStream::GetUserMedia uuid : %s\n",uuid.c_str());
+
 
   auto it = constraints.find(EncodableValue("audio"));
   if (it != constraints.end()) {
@@ -32,6 +38,8 @@ void FlutterMediaStream::GetUserMedia(
 	  params[EncodableValue("audioTracks")] = EncodableValue(EncodableList());
   }
 
+  LOG_DEBUG("[MONG] FlutterMediaStream::GetUserMedia point 1\n");
+
   it = constraints.find(EncodableValue("video"));
   if (it != constraints.end()) {
     EncodableValue video = it->second;
@@ -47,6 +55,8 @@ void FlutterMediaStream::GetUserMedia(
   } else {
 	  params[EncodableValue("videoTracks")] = EncodableValue(EncodableList());
   }
+
+  LOG_DEBUG("[MONG] FlutterMediaStream::GetUserMedia point 2\n");
 
   base_->local_streams_[uuid] = stream;
   result->Success(EncodableValue(params));
