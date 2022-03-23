@@ -59,7 +59,7 @@ const String kTransparentBackgroundPage = '''
   <style type="text/css">
     body { background: transparent; margin: 0; padding: 0; }
     #container { position: relative; margin: 0; padding: 0; width: 100vw; height: 100vh; }
-    #shape { background: red; width: 200px; height: 200px; margin: 0; padding: 0; position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); }
+    #shape { background: red; width: 300px; height: 300px; margin: 0; padding: 0; position: absolute; top: calc(50% - 100px); left: calc(50% - 100px); }
     p { text-align: center; }
   </style>
   <body>
@@ -99,37 +99,63 @@ class _WebViewExampleState extends State<WebViewExample> {
       ),
       // We're using a Builder here so we have a context that is below the Scaffold
       // to allow calling Scaffold.of(context) so we can show a snackbar.
-      body: Builder(builder: (BuildContext context) {
-        return WebView(
-          initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-          },
-          onProgress: (int progress) {
-            print('WebView is loading (progress : $progress%)');
-          },
-          javascriptChannels: <JavascriptChannel>{
-            _toasterJavascriptChannel(context),
-          },
-          navigationDelegate: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              print('blocking navigation to $request}');
-              return NavigationDecision.prevent;
-            }
-            print('allowing navigation to $request');
-            return NavigationDecision.navigate;
-          },
-          onPageStarted: (String url) {
-            print('Page started loading: $url');
-          },
-          onPageFinished: (String url) {
-            print('Page finished loading: $url');
-          },
-          gestureNavigationEnabled: true,
-          backgroundColor: const Color(0x00000000),
-        );
-      }),
+      body: Column(
+        children: <Widget>[
+          Row(children: <Widget>[
+            SizedBox(
+              width: 400.0,
+              height: 300.0,
+              // child: Container( color: Colors.red),
+              child: WebView(
+                initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
+              ),
+            ),
+            SizedBox(
+              width: 400.0,
+              height: 300.0,
+              // child: Container( color: Colors.pink),
+              child: WebView(
+                initialUrl: 'https://css-tricks.com/examples/Circulate/',
+              ),
+            ),
+            SizedBox(
+              width: 400.0,
+              height: 300.0,
+              // child: Container(color: Colors.blue),
+              child: WebView(
+                initialUrl:
+                    'https://lab.hakim.se/wave/03/',
+              ),
+            ),
+          ]),
+          Row(children: <Widget>[
+            SizedBox(
+              width: 400.0,
+              height: 300.0,
+              // child: Container( color: Colors.yellow),
+              child: WebView(
+                initialUrl: 'https://css-tricks.com/examples/Circulate/',
+              ),
+            ),
+            SizedBox(
+              width: 400.0,
+              height: 300.0,
+              // child: Container(color: Colors.purple),
+              child: WebView(
+                initialUrl: 'https://lab.hakim.se/wave/03/',
+              ),
+            ),
+            SizedBox(
+              width: 400.0,
+              height: 300.0,
+              // child: Container(color: Colors.green),
+              child: WebView(
+                initialUrl: 'https://www.apache.org/licenses/LICENSE-2.0.txt',
+              ),
+            ),
+          ])
+        ],
+      ),
       floatingActionButton: favoriteButton(),
     );
   }
