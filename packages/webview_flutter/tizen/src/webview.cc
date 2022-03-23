@@ -182,8 +182,7 @@ WebView::WebView(flutter::PluginRegistrar* registrar, int viewId,
   texture_variant_ = new flutter::TextureVariant(flutter::GpuBufferTexture(
       [this](size_t width, size_t height) -> const FlutterDesktopGpuBuffer* {
         return this->ObtainGpuBuffer(width, height);
-      },
-      [this](void* buffer) -> void { this->DestructBuffer(buffer); }));
+      }));
   SetTextureId(texture_registrar_->RegisterTexture(texture_variant_));
   InitWebView();
 

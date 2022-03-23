@@ -69,6 +69,12 @@ void BufferUnit::Reset(int width, int height) {
   gpu_buffer_->width = width_;
   gpu_buffer_->height = height_;
   gpu_buffer_->buffer = tbm_surface_;
+  gpu_buffer_->release_callback=[](void* release_context) {
+    BufferUnit* bu = (BufferUnit*)release_context;
+    bu->UnmarkInUse();
+  };
+  gpu_buffer_->release_context = this;
+
 }
 
 BufferPool::BufferPool(int width, int height, int pool_size) : last_index_(0) {
