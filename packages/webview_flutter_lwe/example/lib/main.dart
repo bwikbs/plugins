@@ -79,10 +79,25 @@ class WebViewExample extends StatefulWidget {
 
 class _WebViewExampleState extends State<WebViewExample> {
   final WebViewController _controller = WebViewController();
+  final WebViewController _controller2 = WebViewController();
+  final WebViewController _controller3 = WebViewController();
+  final WebViewController _controller4 = WebViewController();
+  final WebViewController _controller5 = WebViewController();
+  final WebViewController _controller6 = WebViewController();
 
   @override
   void initState() {
     super.initState();
+    _controller2
+      ..loadRequest(Uri.parse('https://css-tricks.com/examples/Circulate/'));
+    _controller3
+      ..loadRequest(Uri.parse('https://www.apache.org/licenses/LICENSE-1.1'));
+    _controller4
+      ..loadRequest(Uri.parse('https://lab.hakim.se/wave/03/'));
+    _controller5
+      ..loadRequest(Uri.parse('https://lab.hakim.se/wave/01/'));
+    _controller6
+      ..loadRequest(Uri.parse('https://lab.hakim.se/wave/02/'));
 
     _controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -126,7 +141,7 @@ Page resource error:
           );
         },
       )
-      ..loadRequest(Uri.parse('https://flutter.dev'));
+      ..loadRequest(Uri.parse('https://lab.hakim.se/wave/03/'));
   }
 
   @override
@@ -141,7 +156,50 @@ Page resource error:
           SampleMenu(webViewController: _controller),
         ],
       ),
-      body: WebViewWidget(controller: _controller),
+      body: Column(
+        children: <Widget>[
+            Row(
+              children: <Widget>[
+                  SizedBox(
+                    width: 300.0,
+                    height: 300.0,
+                    child: WebViewWidget(controller: _controller),
+                  ),
+                  SizedBox(
+                    width: 300.0,
+                    height: 300.0,
+                    child: WebViewWidget(controller: _controller2),
+                  ),
+                  SizedBox(
+                    width: 300.0,
+                    height: 300.0,
+                    child: WebViewWidget(controller: _controller3),
+                  ),
+              ]
+            ),
+            Row(
+              children: <Widget>[
+                  SizedBox(
+                    width: 300.0,
+                    height: 300.0,
+                    child: WebViewWidget(controller: _controller4),
+                  ),
+                  SizedBox(
+                    width: 300.0,
+                    height: 300.0,
+                    child: WebViewWidget(controller: _controller5),
+                  ),
+                  SizedBox(
+                    width: 300.0,
+                    height: 300.0,
+                    child: WebViewWidget(controller: _controller6),
+                  ),
+              ]
+            )
+        ],
+      ),
+      
+      
       floatingActionButton: favoriteButton(),
     );
   }
